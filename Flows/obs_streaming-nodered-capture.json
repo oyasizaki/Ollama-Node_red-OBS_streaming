@@ -1,0 +1,157 @@
+[
+    {
+        "id": "79acd229d648cc35",
+        "type": "tab",
+        "label": "Capture Image from RTMP",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "414390569b5d3ecb",
+        "type": "inject",
+        "z": "79acd229d648cc35",
+        "name": "Trigger every 10 seconds",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 300,
+        "y": 100,
+        "wires": [
+            [
+                "6551a75e5bebbce0"
+            ]
+        ]
+    },
+    {
+        "id": "6551a75e5bebbce0",
+        "type": "function",
+        "z": "79acd229d648cc35",
+        "name": "Generate Filename",
+        "func": "var timestamp = new Date().getTime();\nmsg.filename = `C:\\Users\\Oyasi\\Desktop\\Nodered\\img\\screenshot_${timestamp}.jpg`;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 590,
+        "y": 100,
+        "wires": [
+            [
+                "d94e800bedafceb1"
+            ]
+        ]
+    },
+    {
+        "id": "d94e800bedafceb1",
+        "type": "exec",
+        "z": "79acd229d648cc35",
+        "command": "C:\\ffmpeg\\ffmpeg.exe",
+        "addpay": false,
+        "append": "-i rtmp://127.0.0.1:1935/stream/test -vframes 1 -q:v 2 -y \"C:\\Users\\Oyasi\\Desktop\\Nodered\\img\\screenshot_${timestamp}.jpg\"",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "name": "Capture Image",
+        "x": 360,
+        "y": 180,
+        "wires": [
+            [
+                "69e169ee0469761f"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "6d95611653260beb",
+        "type": "image",
+        "z": "79acd229d648cc35",
+        "name": "Preview Image",
+        "width": 160,
+        "data": "payload",
+        "dataType": "msg",
+        "thumbnail": false,
+        "active": true,
+        "pass": false,
+        "outputs": 0,
+        "x": 500,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "69e169ee0469761f",
+        "type": "file in",
+        "z": "79acd229d648cc35",
+        "name": "Read Image",
+        "filename": "C:\\Users\\Oyasi\\Desktop\\Nodered\\img\\screenshot_${timestamp}.jpg",
+        "filenameType": "str",
+        "format": "",
+        "chunk": false,
+        "sendError": true,
+        "encoding": "base64",
+        "allProps": false,
+        "x": 610,
+        "y": 180,
+        "wires": [
+            [
+                "6d95611653260beb",
+                "20426d28c2b693aa"
+            ]
+        ]
+    },
+    {
+        "id": "20426d28c2b693aa",
+        "type": "mqtt out",
+        "z": "79acd229d648cc35",
+        "name": "Send Image",
+        "topic": "image/upload",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "673ca06df35885c1",
+        "x": 810,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "673ca06df35885c1",
+        "type": "mqtt-broker",
+        "name": "MQTT",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]
